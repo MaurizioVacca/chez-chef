@@ -1,0 +1,24 @@
+{
+  "name": "chez-chef",
+  "version": "1.0.0",
+  "description": "A type-safe receipt finder, built with Elm",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx elm-watch hot",
+    "tailwind:watch": "npx tailwindcss -i ./src/main.css -o ./build/main.css --watch"
+  },
+  "keywords": [
+    "Elm",
+    "Receipt Finder",
+    "SPA"
+  ],
+  "author": "Maurizio Vacca",
+  "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.7",
+    "tailwindcss": "^4.1.7"
+  },
+  "devDependencies": {
+    "elm-watch": "^1.2.2"
+  }
+}
