@@ -16,6 +16,12 @@ elm-stuff
 # elm-repl generated files
 repl-temp-*
 
-
 ### IntelliJ ###
+
+# editor configs
 .idea
+
+### Node ###
+
+# modules
+node_modules
