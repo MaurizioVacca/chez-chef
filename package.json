@@ -1,7 +1,7 @@
 {
   "name": "chez-chef",
   "version": "1.0.0",
-  "description": "A type-safe receipt finder, built with Elm",
+  "description": "A type-safe recipe finder, built with Elm",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx elm-watch hot",
@@ -9,7 +9,7 @@
   },
   "keywords": [
     "Elm",
-    "Receipt Finder",
+    "Receipe Finder",
     "SPA"
   ],
   "author": "Maurizio Vacca",
