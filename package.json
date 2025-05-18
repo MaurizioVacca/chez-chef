@@ -4,7 +4,7 @@
   "description": "A type-safe recipe finder, built with Elm",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx elm-watch hot",
+    "dev": "elm-live src/Main.elm --pushstate --start-page=./index.html -- --output=./build/main.js --debug",
     "tailwind:watch": "npx tailwindcss -i ./src/main.css -o ./build/main.css --watch"
   },
   "keywords": [
@@ -16,9 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.7",
+    "elm-live": "^4.0.2",
     "tailwindcss": "^4.1.7"
-  },
-  "devDependencies": {
-    "elm-watch": "^1.2.2"
   }
 }
