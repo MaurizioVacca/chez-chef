@@ -104,7 +104,12 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | LoadCategories Category.Msg
+    | PageMsg MappedPagesMsg
     | LoadRecipes Recipe.Msg
+
+
+type MappedPagesMsg
+    = RecipePageMsg Pages.Recipe.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -115,10 +120,21 @@ update msg model =
                 Category.Receive result ->
                     case result of
                         Ok categories ->
-                            ( { model | shared = Ready { categories = categories } }, Cmd.none )
+                            ( { model | shared = Ready { categories = categories, favourites = [] } }, Cmd.none )
 
                         Err _ ->
                             ( { model | shared = Failed }, Cmd.none )
+
+        PageMsg pageMsg ->
+            case pageMsg of
+                RecipePageMsg recipePageMsg ->
+                    case recipePageMsg of
+                        Pages.Recipe.SharedMsg sharedMsg ->
+                            let
+                                sharedState =
+                                    updateSharedState model.shared sharedMsg
+                            in
+                            ( { model | shared = sharedState }, Cmd.none )
 
         LoadRecipes recipeMsg ->
             case recipeMsg of
@@ -154,6 +170,21 @@ update msg model =
         UrlChanged url ->
             { model | url = url }
                 |> initByRoute
+
+
+updateSharedState : SharedState -> Shared.Msg -> SharedState
+updateSharedState sharedModel sharedMsg =
+    case sharedMsg of
+        Shared.LoadFavourites _ ->
+            sharedModel
+
+        Shared.ToggleFavourite recipe ->
+            case sharedModel of
+                Ready model ->
+                    Ready { model | favourites = Recipe.toggleFavourite recipe model.favourites }
+
+                _ ->
+                    sharedModel
 
 
 
@@ -227,7 +258,7 @@ viewPage sharedModel model =
                 RecipePage maybeModel ->
                     case maybeModel of
                         Just recipe ->
-                            Pages.Recipe.view recipe
+                            Pages.Recipe.view sharedModel recipe |> Html.map (PageMsg << RecipePageMsg)
 
                         _ ->
                             div [] [ text "Not found" ]

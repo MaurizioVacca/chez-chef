@@ -1,8 +1,11 @@
 module Pages.Recipe exposing (..)
 
-import Html exposing (Html, article, div, figure, h2, header, img, li, section, span, text, ul)
+import Html exposing (Html, article, button, div, figure, h2, header, img, li, section, span, text, ul)
 import Html.Attributes
+import Html.Events
 import Recipe exposing (Recipe)
+import Shared exposing (Msg(..))
+import Ui.Icons
 import Ui.Typography
 
 
@@ -10,15 +13,30 @@ type alias Model =
     { recipe : Recipe }
 
 
-view : Model -> Html msg
-view { recipe } =
+type Msg
+    = SharedMsg Shared.Msg
+
+
+view : Shared.Model -> Model -> Html Msg
+view { favourites } { recipe } =
+    let
+        icon =
+            if Recipe.isFavourite recipe favourites then
+                Ui.Icons.icon Ui.Icons.HeartSolid
+
+            else
+                Ui.Icons.icon Ui.Icons.Heart
+    in
     article [ Html.Attributes.class "mt-6 grid grid-cols-12 gap-8" ]
         -- Main heading and tags
         [ section [ Html.Attributes.class "col-span-12 lg:col-span-8 order-1 lg:order-2" ]
             [ header []
                 [ Ui.Typography.mainTitle [ text recipe.name ]
-                , ul [ Html.Attributes.class "py-4 border-b-1 border-b-amber-900 flex gap-2.5" ]
-                    (List.map (\tag -> li [ Html.Attributes.class "inline-block rounded-full px-4 py-2 text-sm border-2 text-pink-700" ] [ text tag ]) recipe.tags)
+                , div [ Html.Attributes.class "flex py-4 border-b-1 border-b-amber-900" ]
+                    [ ul [ Html.Attributes.class "flex gap-2.5" ]
+                        (List.map (\tag -> li [ Html.Attributes.class "inline-block rounded-full px-4 py-1 text-sm border-2 text-pink-700" ] [ text tag ]) recipe.tags)
+                    , button [ Html.Attributes.class "ml-auto cursor-pointer text-red-500", Html.Events.onClick (SharedMsg (ToggleFavourite recipe)) ] [ icon ]
+                    ]
                 ]
             ]
 
