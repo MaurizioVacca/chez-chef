@@ -6,6 +6,6 @@
     }
     body {
         @apply h-full;
-        @apply bg-amber-50;
+        @apply bg-white;
     }
 }
