@@ -7,6 +7,8 @@ import Html exposing (Html, a, div, footer, header, img, main_, nav, section, sp
 import Html.Attributes
 import Pages.Category
 import Pages.Home
+import Pages.Recipe
+import Recipe
 import Route
 import Shared
 import Url
@@ -42,12 +44,13 @@ type SharedState
     | Failed
 
 
-{-| Match Pages directory 1:1. Any change to Route type
-will most likely be reflected here as well.
+{-| Match Pages directory 1:1. Any change to available Routes
+will most be reflected here as well.
 -}
 type Pages
     = HomePage
-    | CategoryPage
+    | CategoryPage (Maybe Pages.Category.Model)
+    | RecipePage (Maybe Pages.Recipe.Model)
     | NotFoundPage
 
 
@@ -71,11 +74,24 @@ initByRoute model =
                 Route.Home ->
                     ( HomePage, Cmd.batch [ Cmd.map LoadCategories Category.getCategories ] )
 
-                Route.Category ->
-                    ( CategoryPage, Cmd.batch [ Cmd.map LoadCategories Category.getCategories ] )
+                Route.Category categoryName ->
+                    ( CategoryPage Nothing
+                    , Cmd.batch
+                        [ Cmd.map LoadRecipes (Recipe.getRecipesByCategory categoryName)
+                        , Cmd.map LoadCategories Category.getCategories
+                        ]
+                    )
 
                 Route.NotFound ->
                     ( NotFoundPage, Cmd.batch [ Cmd.map LoadCategories Category.getCategories ] )
+
+                Route.Recipe recipeId ->
+                    ( RecipePage Nothing
+                    , Cmd.batch
+                        [ Cmd.map LoadCategories Category.getCategories
+                        , Cmd.map LoadRecipes (Recipe.lookupRecipe recipeId)
+                        ]
+                    )
     in
     ( { model | page = currentPage }, mappedCmds )
 
@@ -88,6 +104,7 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | LoadCategories Category.Msg
+    | LoadRecipes Recipe.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -102,6 +119,29 @@ update msg model =
 
                         Err _ ->
                             ( { model | shared = Failed }, Cmd.none )
+
+        LoadRecipes recipeMsg ->
+            case recipeMsg of
+                Recipe.ReceiveRecipes result ->
+                    case result of
+                        Ok value ->
+                            ( { model | page = CategoryPage (Just (Pages.Category.Model value)) }, Cmd.none )
+
+                        Err _ ->
+                            ( { model | page = NotFoundPage }, Cmd.none )
+
+                Recipe.ReceiveRecipeLookup result ->
+                    case result of
+                        Ok value ->
+                            case value of
+                                Just recipe ->
+                                    ( { model | page = RecipePage (Just (Pages.Recipe.Model recipe)) }, Cmd.none )
+
+                                Nothing ->
+                                    ( { model | page = NotFoundPage }, Cmd.none )
+
+                        Err _ ->
+                            ( { model | page = NotFoundPage }, Cmd.none )
 
         LinkClicked url ->
             case url of
@@ -145,16 +185,18 @@ view model =
     in
     { title = "ChezChef - Everyday a new taste!"
     , body =
-        [ header [ Html.Attributes.class "w-full bg-amber-950 p-4" ]
-            [ nav [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-xl font-serif text-amber-100" ]
-                [ a [ Html.Attributes.href "/", Html.Attributes.class "flex flex-col items-center w-24" ]
-                    [ img [ Html.Attributes.src "/public/logo.svg", Html.Attributes.class "w-20 h-20" ] []
-                    , span [] [ text "Chez-Chef" ]
+        [ div [ Html.Attributes.class "flex flex-col h-full" ]
+            [ header [ Html.Attributes.class "w-full bg-amber-950 p-4" ]
+                [ nav [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-xl font-serif text-amber-100" ]
+                    [ a [ Html.Attributes.href "/", Html.Attributes.class "flex flex-col items-center w-24" ]
+                        [ img [ Html.Attributes.src "/public/logo.svg", Html.Attributes.class "w-20 h-20" ] []
+                        , span [] [ text "Chez-Chef" ]
+                        ]
                     ]
                 ]
+            , main_ [ Html.Attributes.class "max-w-7xl mx-auto py-10 px-10 sm:px-20" ] pageContent
+            , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ] [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text "Chez-Chef - 2025 ©" ] ]
             ]
-        , main_ [ Html.Attributes.class "max-w-7xl mx-auto py-10 px-10 sm:px-20" ] pageContent
-        , footer [ Html.Attributes.class "w-full bg-amber-950 py-4" ] [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text "Chez-Chef - 2025 ©" ] ]
         ]
     }
 
@@ -167,10 +209,27 @@ viewPage sharedModel model =
                 HomePage ->
                     Pages.Home.view sharedModel
 
-                CategoryPage ->
-                    Pages.Category.view
+                CategoryPage values ->
+                    let
+                        maybeCategory =
+                            Pages.Category.findCategoryBySlug model.url sharedModel.categories
+                    in
+                    case ( values, maybeCategory ) of
+                        ( Just pageModel, Just category ) ->
+                            Pages.Category.view category pageModel
+
+                        _ ->
+                            div [] [ text "Not found" ]
 
                 NotFoundPage ->
                     div [] [ text "Not found" ]
+
+                RecipePage maybeModel ->
+                    case maybeModel of
+                        Just recipe ->
+                            Pages.Recipe.view recipe
+
+                        _ ->
+                            div [] [ text "Not found" ]
     in
     div [] [ pageView ]
