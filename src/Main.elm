@@ -12,6 +12,7 @@ import Recipe
 import Route
 import Shared
 import Url
+import Utils
 
 
 main : Program () Model Msg
@@ -214,19 +215,21 @@ view model =
                 Failed ->
                     [ div [] [ text "Failed to load." ] ]
     in
-    { title = "ChezChef - Everyday a new taste!"
+    { title = Utils.appName ++ " - Everyday a new taste!"
     , body =
         [ div [ Html.Attributes.class "flex flex-col h-full" ]
             [ header [ Html.Attributes.class "w-full bg-amber-950 p-4" ]
                 [ nav [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-xl font-serif text-amber-100" ]
                     [ a [ Html.Attributes.href "/", Html.Attributes.class "flex flex-col items-center w-24" ]
                         [ img [ Html.Attributes.src "/public/logo.svg", Html.Attributes.class "w-20 h-20" ] []
-                        , span [] [ text "Chez-Chef" ]
+                        , span [] [ text Utils.appName ]
                         ]
                     ]
                 ]
             , main_ [ Html.Attributes.class "max-w-7xl mx-auto py-10 px-10 sm:px-20" ] pageContent
-            , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ] [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text "© 2025, Chez-Chef" ] ]
+            , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ]
+                [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text ("© 2025, " ++ Utils.appName) ]
+                ]
             ]
         ]
     }
