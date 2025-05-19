@@ -3,6 +3,12 @@ module Utils exposing (..)
 import Json.Decode
 
 
+{-| -}
+appName : String
+appName =
+    "Chez-Chef"
+
+
 {-| Define API URL.
 In more advanced situations, this may be put on a dedicated .env file instead.
 -}
