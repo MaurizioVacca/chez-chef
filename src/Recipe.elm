@@ -129,3 +129,17 @@ recipeIngredientsDecoder =
                     )
     in
     groupIngredientAndAmount 1 []
+
+
+isFavourite : Recipe -> List Int -> Bool
+isFavourite recipe favourites =
+    List.member recipe.id favourites
+
+
+toggleFavourite : Recipe -> List Int -> List Int
+toggleFavourite recipe favourites =
+    if isFavourite recipe favourites then
+        List.filter (\item -> item /= recipe.id) favourites
+
+    else
+        favourites ++ [ recipe.id ]
