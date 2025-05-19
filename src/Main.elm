@@ -195,7 +195,7 @@ view model =
                     ]
                 ]
             , main_ [ Html.Attributes.class "max-w-7xl mx-auto py-10 px-10 sm:px-20" ] pageContent
-            , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ] [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text "Chez-Chef - 2025 ©" ] ]
+            , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ] [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text "© 2025, Chez-Chef" ] ]
             ]
         ]
     }
