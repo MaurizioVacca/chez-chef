@@ -35,7 +35,7 @@ view { favourites } { recipe } =
                 , div [ Html.Attributes.class "flex py-4 border-b-1 border-b-amber-900" ]
                     [ ul [ Html.Attributes.class "flex gap-2.5" ]
                         (List.map (\tag -> li [ Html.Attributes.class "inline-block rounded-full px-4 py-1 text-sm border-2 text-pink-700" ] [ text tag ]) recipe.tags)
-                    , button [ Html.Attributes.class "ml-auto cursor-pointer text-red-500", Html.Events.onClick (SharedMsg (ToggleFavourite recipe)) ] [ icon ]
+                    , button [ Html.Attributes.class "ml-auto cursor-pointer text-pink-700", Html.Events.onClick (SharedMsg (ToggleFavourite recipe)) ] [ icon ]
                     ]
                 ]
             ]
