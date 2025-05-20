@@ -91,7 +91,12 @@ initByRoute model =
             Route.parseUrl model.url
 
         sharedCmd =
-            [ Cmd.map LoadCategories Category.getCategories ]
+            case model.shared of
+                Preload ->
+                    [ Cmd.map LoadCategories Category.getCategories ]
+
+                _ ->
+                    [ Cmd.none ]
 
         ( currentPage, mappedCmds ) =
             case route of
@@ -231,7 +236,6 @@ update msg model =
 
         UrlChanged url ->
             { model | url = url }
-                -- Nice to have: updating the state rather than reloading everything from scratch
                 |> initByRoute
 
         SearchRecipeIndex recipeMsg ->
