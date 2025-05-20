@@ -32,3 +32,8 @@ stringToInt =
                     Json.Decode.fail (s ++ " is not an Int")
     in
     Json.Decode.string |> Json.Decode.andThen toInt
+
+
+toSafeString : String -> String
+toSafeString s =
+    String.replace " " "_" s
