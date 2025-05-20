@@ -13,6 +13,8 @@ overviewCard recipeOverview =
                 [ img
                     [ Html.Attributes.src (recipeOverview.thumb ++ "/medium")
                     , Html.Attributes.class "w-72 h-80 object-cover hover:scale-110 transition-all ease-in-out"
+                    , Html.Attributes.attribute "loading" "lazy"
+                    , Html.Attributes.alt ""
                     ]
                     []
                 , figcaption

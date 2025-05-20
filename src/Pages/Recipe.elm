@@ -52,7 +52,16 @@ view { favourites } { recipe } =
 
         -- Picture
         , section [ Html.Attributes.class "col-span-12 lg:col-span-4 order-2 lg:order-1 lg:row-1 relative lg:col-start-1 lg:col-end-5" ]
-            [ figure [ Html.Attributes.class "lg:absolute" ] [ img [ Html.Attributes.src recipe.thumb, Html.Attributes.class "aspect-video lg:aspect-3/4 object-cover object-center mx-auto" ] [] ] ]
+            [ figure [ Html.Attributes.class "lg:absolute" ]
+                [ img
+                    [ Html.Attributes.src recipe.thumb
+                    , Html.Attributes.class "aspect-video lg:aspect-3/4 object-cover object-center mx-auto"
+                    , Html.Attributes.attribute "loading" "lazy"
+                    , Html.Attributes.alt ""
+                    ]
+                    []
+                ]
+            ]
 
         -- Ingredients
         , section [ Html.Attributes.class "lg:row-start-1 lg:row-end-8 col-span-12 lg:col-start-1 lg:col-end-5 order-3" ]
