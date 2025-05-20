@@ -10,6 +10,7 @@ type Icons
     | HeartSolid
     | Logo
     | Search
+    | Book
 
 
 heartShape : Html msg
@@ -78,6 +79,19 @@ logo =
         ]
 
 
+bookShape : Html msg
+bookShape =
+    svg
+        [ Svg.Attributes.width "100%"
+        , Svg.Attributes.height "100%"
+        , Svg.Attributes.viewBox "0 0 24 24"
+        , Svg.Attributes.fill "none"
+        , Svg.Attributes.stroke "currentColor"
+        , Svg.Attributes.strokeWidth "2"
+        ]
+        [ path [ Svg.Attributes.d "M4 19.5A2.5 2.5 0 0 1 6.5 17H20" ] [], path [ Svg.Attributes.d "M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" ] [] ]
+
+
 icon : Icons -> Html msg
 icon iconType =
     case iconType of
@@ -92,3 +106,6 @@ icon iconType =
 
         Logo ->
             logo
+
+        Book ->
+            bookShape

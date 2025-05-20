@@ -66,6 +66,7 @@ type Pages
     | CategoryPage (Maybe Pages.Category.Model)
     | RecipePage (Maybe Pages.Recipe.Model)
     | SearchPage (Maybe Pages.Search.Model)
+    | FavouritesPage
     | NotFoundPage
 
 
@@ -107,6 +108,9 @@ initByRoute model =
                     ( CategoryPage Nothing
                     , Cmd.batch ([ Cmd.map LoadRecipes (Recipe.getRecipesByCategory categoryName) ] ++ sharedCmd)
                     )
+
+                Route.Favourites ->
+                    ( FavouritesPage, Cmd.batch sharedCmd )
 
                 Route.Search searchValue queryIndex ->
                     let
@@ -256,7 +260,7 @@ update msg model =
                 Recipe.ReceiveRecipes result ->
                     case result of
                         Ok recipes ->
-                            ( { model | page = SearchPage (Just (Pages.Category.Model recipes)) }, Cmd.none )
+                            ( { model | page = SearchPage (Just (Pages.Search.Model recipes "Search Results")) }, Cmd.none )
 
                         Err _ ->
                             ( model, Cmd.none )
@@ -377,13 +381,13 @@ view model =
         [ div [ Html.Attributes.class "flex flex-col h-full", Html.Events.onClick CollapseSearchBox ]
             -- Header
             [ header [ Html.Attributes.class "w-full bg-amber-950 py-2" ]
-                [ nav [ Html.Attributes.class "mx-auto px-10 text-xl font-serif text-amber-100 flex justify-start items-center" ]
-                    [ a [ Html.Attributes.href "/", Html.Attributes.class "flex flex-col items-center w-24" ]
-                        [ span [ Html.Attributes.class "w-18 h-18" ] [ Ui.Icons.icon Ui.Icons.Logo ]
-                        , span [ Html.Attributes.class "text-sm" ] [ text Utils.appName ]
+                [ nav [ Html.Attributes.class "mx-auto px-4 sm:px-10 text-xl font-serif text-amber-100 flex justify-start items-center" ]
+                    [ a [ Html.Attributes.href "/", Html.Attributes.class "flex flex-col items-center pr-2 sm:px-6" ]
+                        [ span [ Html.Attributes.class "w-12 h-12 sm:w-18 sm:h-18" ] [ Ui.Icons.icon Ui.Icons.Logo ]
+                        , span [ Html.Attributes.class "hidden sm:block text-sm" ] [ text Utils.appName ]
                         ]
                     , div [ Html.Attributes.class "flex-1 flex justify-center" ]
-                        [ div [ Html.Attributes.class "bg-white rounded-full h-12 flex px-4 py-2 text-amber-950 shadow-2xl w-32 sm:w-[400px] relative" ]
+                        [ div [ Html.Attributes.class "bg-white rounded-full h-12 flex px-4 py-2 text-amber-950 shadow-2xl sm:w-[400px] relative" ]
                             [ input
                                 [ Html.Attributes.type_ "text"
                                 , Html.Attributes.class "outline-0 w-full"
@@ -401,11 +405,15 @@ view model =
                             , searchBox
                             ]
                         ]
+                    , a [ Html.Attributes.href "/favourites", Html.Attributes.class "flex flex-col items-center pl-2 sm:px-6 gap-2 sm:self-end" ]
+                        [ span [ Html.Attributes.class "w-8 h-8" ] [ Ui.Icons.icon Ui.Icons.Book ]
+                        , span [ Html.Attributes.class "hidden sm:block text-sm" ] [ text "Favourites" ]
+                        ]
                     ]
                 ]
 
             -- Page Content
-            , main_ [ Html.Attributes.class "max-w-7xl mx-auto py-10 px-4 sm:px-20" ] pageContent
+            , main_ [ Html.Attributes.class "w-full max-w-7xl mx-auto py-10 px-4 sm:px-20" ] pageContent
 
             -- Footer
             , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ]
@@ -493,6 +501,9 @@ viewPage sharedModel model =
 
                         _ ->
                             div [] [ text "Pending" ]
+
+                FavouritesPage ->
+                    Pages.Search.view <| { recipes = sharedModel.favourites, title = "Your Favourites" }
 
                 SearchPage maybeModel ->
                     case maybeModel of
