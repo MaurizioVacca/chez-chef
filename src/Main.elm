@@ -17,6 +17,7 @@ import Recipe
 import Route
 import Shared
 import Ui.Icons
+import Ui.Pending
 import Url
 import Utils
 
@@ -360,7 +361,7 @@ view model =
         ( pageContent, searchBox ) =
             case model.shared of
                 Preload ->
-                    ( [ div [] [ text "Loading ..." ] ], text "" )
+                    ( [ Ui.Pending.indicator ], text "" )
 
                 Ready sharedData ->
                     ( [ viewPage sharedData model ], viewSearchBox sharedData model )
@@ -500,7 +501,7 @@ viewPage sharedModel model =
                             Pages.Category.view category pageModel
 
                         _ ->
-                            div [] [ text "Pending" ]
+                            Ui.Pending.indicator
 
                 FavouritesPage ->
                     Pages.Search.view <| { recipes = sharedModel.favourites, title = "Your Favourites" }
@@ -511,7 +512,7 @@ viewPage sharedModel model =
                             Pages.Search.view recipes
 
                         _ ->
-                            div [] [ text "Pending" ]
+                            Ui.Pending.indicator
 
                 NotFoundPage ->
                     div [] [ text "Not found" ]
@@ -522,6 +523,6 @@ viewPage sharedModel model =
                             Pages.Recipe.view sharedModel recipe |> Html.map (PageMsg << RecipePageMsg)
 
                         _ ->
-                            div [] [ text "Pending" ]
+                            Ui.Pending.indicator
     in
     div [] [ pageView ]
