@@ -37,3 +37,13 @@ stringToInt =
 toSafeString : String -> String
 toSafeString s =
     String.replace " " "_" s
+
+
+toRecipePage : { a | id : Int, name : String } -> String
+toRecipePage { id } =
+    [ "/recipe", String.fromInt id ] |> String.join "/"
+
+
+toSearchPage : { a | id : Int, name : String } -> String
+toSearchPage { name } =
+    [ "/recipes", name ] |> String.join "/"
