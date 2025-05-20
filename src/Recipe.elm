@@ -43,6 +43,14 @@ getRecipesByCategory categoryName =
         }
 
 
+getRecipesByName : String -> Cmd Msg
+getRecipesByName name =
+    Http.get
+        { url = Utils.apiUrl ++ "search.php?s=" ++ name
+        , expect = Http.expectJson ReceiveRecipes (Json.Decode.field "meals" (Json.Decode.list recipeOverviewDecoder))
+        }
+
+
 recipeOverviewDecoder : Json.Decode.Decoder RecipeOverview
 recipeOverviewDecoder =
     Json.Decode.succeed RecipeOverview
