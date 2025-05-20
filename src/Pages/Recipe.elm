@@ -1,6 +1,6 @@
 module Pages.Recipe exposing (..)
 
-import Html exposing (Html, article, button, div, figure, h2, header, img, li, section, span, text, ul)
+import Html exposing (Html, a, article, button, div, figure, h2, header, img, li, section, span, text, ul)
 import Html.Attributes
 import Html.Events
 import Recipe exposing (Recipe)
@@ -28,8 +28,15 @@ view { favourites } { recipe } =
                 Ui.Icons.icon Ui.Icons.Heart
     in
     article [ Html.Attributes.class "mt-6 grid grid-cols-12 gap-8" ]
+        -- Breadcrumbs
+        [ section [ Html.Attributes.class "col-span-12 lg:col-span-8 text-orange-400 text-xs uppercase [&>a]:underline" ]
+            [ a [ Html.Attributes.href "/" ] [ text "Home" ]
+            , span [ Html.Attributes.class "px-2" ] [ text "/" ]
+            , a [ Html.Attributes.href ("/category/" ++ String.toLower recipe.categoryName) ] [ text recipe.categoryName ]
+            ]
+
         -- Main heading and tags
-        [ section [ Html.Attributes.class "col-span-12 lg:col-span-8 order-1 lg:order-2" ]
+        , section [ Html.Attributes.class "col-span-12 lg:col-span-8 order-1 lg:order-2" ]
             [ header []
                 [ Ui.Typography.mainTitle [ text recipe.name ]
                 , div [ Html.Attributes.class "flex py-4 border-b-1 border-b-amber-900" ]
