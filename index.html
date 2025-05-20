@@ -7,6 +7,25 @@
     <script src="/build/main.js"></script>
 </head>
 <body>
-    <script>var app = Elm.Main.init();</script>
+    <script>
+
+
+        var app = Elm.Main.init();
+
+        // -- Register Elm Ports
+        app.ports.storeFavourites.subscribe(function(favourites) {
+            const stringifiesFavourites = JSON.stringify(favourites);
+
+            localStorage.setItem('favourites', stringifiesFavourites);
+        });
+
+        app.ports.requestFavourites.subscribe(_ => {
+            const favourites = localStorage.getItem('favourites');
+            const storedFavourites = !!favourites ? JSON.parse(favourites) : null;
+
+            // Send data back to Elm
+            app.ports.receiveFavourites.send(storedFavourites);
+        });
+    </script>
 </body>
 </html>

@@ -12,6 +12,7 @@ import Pages.Category
 import Pages.Home
 import Pages.Recipe
 import Pages.Search
+import Ports
 import Recipe
 import Route
 import Shared
@@ -90,19 +91,16 @@ initByRoute model =
             Route.parseUrl model.url
 
         sharedCmd =
-            Cmd.map LoadCategories Category.getCategories
+            [ Cmd.map LoadCategories Category.getCategories ]
 
         ( currentPage, mappedCmds ) =
             case route of
                 Route.Home ->
-                    ( HomePage, Cmd.batch [ sharedCmd ] )
+                    ( HomePage, Cmd.batch sharedCmd )
 
                 Route.Category categoryName ->
                     ( CategoryPage Nothing
-                    , Cmd.batch
-                        [ Cmd.map LoadRecipes (Recipe.getRecipesByCategory categoryName)
-                        , sharedCmd
-                        ]
+                    , Cmd.batch ([ Cmd.map LoadRecipes (Recipe.getRecipesByCategory categoryName) ] ++ sharedCmd)
                     )
 
                 Route.Search searchValue queryIndex ->
@@ -115,17 +113,14 @@ initByRoute model =
                                 Nothing ->
                                     Cmd.map SearchRecipes (Recipe.getRecipesByName searchValue)
                     in
-                    ( SearchPage Nothing, Cmd.batch [ sharedCmd, searchCmd ] )
+                    ( SearchPage Nothing, Cmd.batch (sharedCmd ++ [ searchCmd ]) )
 
                 Route.NotFound ->
-                    ( NotFoundPage, Cmd.batch [ sharedCmd ] )
+                    ( NotFoundPage, Cmd.batch sharedCmd )
 
                 Route.Recipe recipeId ->
                     ( RecipePage Nothing
-                    , Cmd.batch
-                        [ sharedCmd
-                        , Cmd.map LoadRecipes (Recipe.lookupRecipe recipeId)
-                        ]
+                    , Cmd.batch (sharedCmd ++ [ Cmd.map LoadRecipes (Recipe.lookupRecipe recipeId) ])
                     )
     in
     ( { model | page = currentPage }, mappedCmds )
@@ -147,6 +142,7 @@ type Msg
     | QuerySuggestion String
     | RestoreSearch String
     | CollapseSearchBox
+    | ReceiveFavourites (Maybe String)
     | NoOp
 
 
@@ -162,7 +158,11 @@ update msg model =
                 Category.Receive result ->
                     case result of
                         Ok categories ->
-                            ( { model | shared = Ready { categories = categories, favourites = [], ingredients = [] } }, Cmd.map LoadIngredients Ingredient.getIngredients )
+                            let
+                                ( sharedState, sharedCmd ) =
+                                    updateSharedState model.shared (Shared.SetCategories categories)
+                            in
+                            ( { model | shared = sharedState }, sharedCmd )
 
                         Err _ ->
                             ( { model | shared = Failed }, Cmd.none )
@@ -172,7 +172,11 @@ update msg model =
                 Ingredient.Receive result ->
                     case result of
                         Ok ingredients ->
-                            ( { model | shared = updateSharedState model.shared (Shared.SetIngredients ingredients) }, Cmd.none )
+                            let
+                                ( sharedState, _ ) =
+                                    updateSharedState model.shared (Shared.SetIngredients ingredients)
+                            in
+                            ( { model | shared = sharedState }, Cmd.none )
 
                         Err _ ->
                             ( model, Cmd.none )
@@ -183,10 +187,10 @@ update msg model =
                     case recipePageMsg of
                         Pages.Recipe.SharedMsg sharedMsg ->
                             let
-                                sharedState =
+                                ( sharedState, sharedCmd ) =
                                     updateSharedState model.shared sharedMsg
                             in
-                            ( { model | shared = sharedState }, Cmd.none )
+                            ( { model | shared = sharedState }, sharedCmd )
 
         LoadRecipes recipeMsg ->
             case recipeMsg of
@@ -273,28 +277,60 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        ReceiveFavourites storedFavourites ->
+            case storedFavourites of
+                Just val ->
+                    let
+                        favourites =
+                            Recipe.loadFavourites val
 
-updateSharedState : SharedState -> Shared.Msg -> SharedState
+                        ( sharedState, _ ) =
+                            updateSharedState model.shared (Shared.LoadFavourites favourites)
+                    in
+                    ( { model | shared = sharedState }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+
+updateSharedState : SharedState -> Shared.Msg -> ( SharedState, Cmd Msg )
 updateSharedState sharedModel sharedMsg =
     case sharedMsg of
-        Shared.LoadFavourites _ ->
-            sharedModel
+        Shared.LoadFavourites favourites ->
+            case sharedModel of
+                Ready model ->
+                    ( Ready { model | favourites = favourites }, Cmd.none )
+
+                _ ->
+                    ( sharedModel, Cmd.none )
 
         Shared.ToggleFavourite recipe ->
             case sharedModel of
                 Ready model ->
-                    Ready { model | favourites = Recipe.toggleFavourite recipe model.favourites }
+                    let
+                        favourites =
+                            Recipe.toggleFavourite recipe model.favourites
+                    in
+                    ( Ready { model | favourites = favourites }, Recipe.saveFavourites favourites )
 
                 _ ->
-                    sharedModel
+                    ( sharedModel, Cmd.none )
+
+        Shared.SetCategories categories ->
+            case sharedModel of
+                Preload ->
+                    ( Ready { categories = categories, favourites = [], ingredients = [] }, Cmd.batch [ Cmd.map LoadIngredients Ingredient.getIngredients, Ports.requestFavourites () ] )
+
+                _ ->
+                    ( sharedModel, Cmd.none )
 
         Shared.SetIngredients ingredients ->
             case sharedModel of
                 Ready model ->
-                    Ready { model | ingredients = ingredients }
+                    ( Ready { model | ingredients = ingredients }, Cmd.none )
 
                 _ ->
-                    sharedModel
+                    ( sharedModel, Cmd.none )
 
 
 
@@ -303,7 +339,7 @@ updateSharedState sharedModel sharedMsg =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Ports.receiveFavourites ReceiveFavourites
 
 
 
@@ -369,7 +405,7 @@ view model =
 
             -- Footer
             , footer [ Html.Attributes.class "w-full bg-amber-950 py-4 mt-auto" ]
-                [ section [ Html.Attributes.class "max-w-7xl mx-auto px-10 sm:px-20 text-sm font-serif text-amber-100" ] [ text ("© 2025, " ++ Utils.appName) ]
+                [ section [ Html.Attributes.class "mx-auto px-10 text-sm font-serif text-amber-100" ] [ text ("© 2025, " ++ Utils.appName) ]
                 ]
             ]
         ]

@@ -20,8 +20,11 @@ type Msg
 view : Shared.Model -> Model -> Html Msg
 view { favourites } { recipe } =
     let
+        asOverview =
+            Recipe.toRecipeOverview recipe
+
         icon =
-            if Recipe.isFavourite recipe favourites then
+            if Recipe.isFavourite asOverview favourites then
                 Ui.Icons.icon Ui.Icons.HeartSolid
 
             else
@@ -42,7 +45,7 @@ view { favourites } { recipe } =
                 , div [ Html.Attributes.class "flex py-4 border-b-1 border-b-amber-900" ]
                     [ ul [ Html.Attributes.class "flex gap-2.5" ]
                         (List.map (\tag -> li [ Html.Attributes.class "inline-block rounded-full px-4 py-1 text-sm border-2 text-pink-700" ] [ text tag ]) recipe.tags)
-                    , button [ Html.Attributes.class "ml-auto cursor-pointer text-pink-700", Html.Events.onClick (SharedMsg (ToggleFavourite recipe)) ] [ icon ]
+                    , button [ Html.Attributes.class "ml-auto cursor-pointer text-pink-700", Html.Events.onClick (SharedMsg (ToggleFavourite asOverview)) ] [ icon ]
                     ]
                 ]
             ]
@@ -56,7 +59,15 @@ view { favourites } { recipe } =
             [ div [ Html.Attributes.class "lg:mt-[calc(125%+40px)]" ]
                 [ h2 [ Html.Attributes.class "text-xl font-semibold text-amber-950" ] [ text "Ingredients" ]
                 , ul [ Html.Attributes.class "flex flex-col font-light mt-4 gap-4" ]
-                    (List.map (\ingredient -> li [ Html.Attributes.class "flex justify-between" ] [ span [] [ text ingredient.name ], span [] [ text ingredient.amount ] ]) recipe.ingredients)
+                    (List.map
+                        (\ingredient ->
+                            li [ Html.Attributes.class "flex justify-between" ]
+                                [ span [] [ text ingredient.name ]
+                                , span [] [ text ingredient.amount ]
+                                ]
+                        )
+                        recipe.ingredients
+                    )
                 ]
             ]
 

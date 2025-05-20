@@ -3,6 +3,8 @@ module Recipe exposing (..)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline as JDPipeline
+import Json.Encode
+import Ports
 import Utils
 
 
@@ -147,15 +149,62 @@ recipeIngredientsDecoder =
     groupIngredientAndAmount 1 []
 
 
-isFavourite : Recipe -> List Int -> Bool
+isFavourite : RecipeOverview -> List RecipeOverview -> Bool
 isFavourite recipe favourites =
-    List.member recipe.id favourites
+    List.member recipe favourites
 
 
-toggleFavourite : Recipe -> List Int -> List Int
+toggleFavourite : RecipeOverview -> List RecipeOverview -> List RecipeOverview
 toggleFavourite recipe favourites =
     if isFavourite recipe favourites then
-        List.filter (\item -> item /= recipe.id) favourites
+        List.filter (\item -> item.id /= recipe.id) favourites
 
     else
-        favourites ++ [ recipe.id ]
+        favourites ++ [ recipe ]
+
+
+{-| Create a recipe overview from a full recipe model.
+-}
+toRecipeOverview : Recipe -> RecipeOverview
+toRecipeOverview recipe =
+    RecipeOverview
+        recipe.id
+        recipe.name
+        recipe.thumb
+
+
+{-| Encode a recipe overview. The result encoded JSON is perfectly compatible with recipeOverviewDecoder
+-}
+recipeOverviewEncoder : RecipeOverview -> Json.Encode.Value
+recipeOverviewEncoder recipeOverview =
+    Json.Encode.object
+        [ ( "idMeal", Json.Encode.string (String.fromInt recipeOverview.id) )
+        , ( "strMeal", Json.Encode.string recipeOverview.name )
+        , ( "strMealThumb", Json.Encode.string recipeOverview.thumb )
+        ]
+
+
+saveFavourites : List RecipeOverview -> Cmd msg
+saveFavourites recipeOverviewList =
+    Json.Encode.list recipeOverviewEncoder recipeOverviewList
+        |> Json.Encode.encode 0
+        |> Ports.storeFavourites
+
+
+loadFavourites : String -> List RecipeOverview
+loadFavourites storedFavourites =
+    let
+        favourites =
+            Json.Decode.decodeString (Json.Decode.list recipeOverviewDecoder) storedFavourites
+    in
+    case favourites of
+        Ok favouriteList ->
+            favouriteList
+
+        -- Unable to decode: invalid/corrupted data
+        Err err ->
+            let
+                _ =
+                    Debug.log "-- An error occurred: " err
+            in
+            []

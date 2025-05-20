@@ -10,12 +10,13 @@ import Recipe
 
 type alias Model =
     { categories : List Category.Category
-    , favourites : List Int
+    , favourites : List Recipe.RecipeOverview
     , ingredients : List Ingredient.Ingredient
     }
 
 
 type Msg
-    = LoadFavourites (List Recipe.Recipe)
-    | ToggleFavourite Recipe.Recipe
+    = LoadFavourites (List Recipe.RecipeOverview)
+    | ToggleFavourite Recipe.RecipeOverview
     | SetIngredients (List Ingredient.Ingredient)
+    | SetCategories (List Category.Category)
