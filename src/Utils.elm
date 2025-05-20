@@ -44,6 +44,15 @@ toRecipePage { id } =
     [ "/recipe", String.fromInt id ] |> String.join "/"
 
 
-toSearchPage : { a | id : Int, name : String } -> String
-toSearchPage { name } =
-    [ "/recipes", name ] |> String.join "/"
+toSearchPage : Maybe String -> { a | id : Int, name : String } -> String
+toSearchPage query { name } =
+    let
+        basePath =
+            [ "/search", toSafeString <| String.toLower <| name ] |> String.join "/"
+    in
+    case query of
+        Just params ->
+            basePath ++ "?" ++ params
+
+        Nothing ->
+            basePath

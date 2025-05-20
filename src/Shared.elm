@@ -4,28 +4,18 @@ module Shared exposing (..)
 -}
 
 import Category
-import GeoArea
+import Ingredient
 import Recipe
 
 
 type alias Model =
     { categories : List Category.Category
     , favourites : List Int
-    }
-
-
-type SearchHitIndex
-    = CategoryIndex
-    | GeoAreaIndex
-    | IngredientIndex
-
-
-type alias SearchHit =
-    { name : String
-    , group : SearchHitIndex
+    , ingredients : List Ingredient.Ingredient
     }
 
 
 type Msg
     = LoadFavourites (List Recipe.Recipe)
     | ToggleFavourite Recipe.Recipe
+    | SetIngredients (List Ingredient.Ingredient)
