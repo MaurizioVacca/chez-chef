@@ -203,8 +203,4 @@ loadFavourites storedFavourites =
 
         -- Unable to decode: invalid/corrupted data
         Err err ->
-            let
-                _ =
-                    Debug.log "-- An error occurred: " err
-            in
             []
