@@ -7,7 +7,7 @@ import Recipe
 
 overviewCard : Recipe.RecipeOverview -> Html msg
 overviewCard recipeOverview =
-    article [ Html.Attributes.class "bg-white w-72 sm:w-auto overflow-hidden rounded" ]
+    article [ Html.Attributes.class "bg-white w-72 sm:w-auto overflow-hidden rounded", Html.Attributes.attribute "data-cy" "recipe-card" ]
         [ a [ Html.Attributes.href ("/recipe/" ++ String.fromInt recipeOverview.id) ]
             [ figure [ Html.Attributes.class "overflow-hidden relative" ]
                 [ img

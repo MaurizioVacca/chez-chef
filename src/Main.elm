@@ -10,6 +10,7 @@ import Ingredient
 import Json.Decode
 import Pages.Category
 import Pages.Home
+import Pages.NotFound
 import Pages.Recipe
 import Pages.Search
 import Ports
@@ -515,7 +516,7 @@ viewPage sharedModel model =
                             Ui.Pending.indicator
 
                 NotFoundPage ->
-                    div [] [ text "Not found" ]
+                    Pages.NotFound.view
 
                 RecipePage maybeModel ->
                     case maybeModel of
