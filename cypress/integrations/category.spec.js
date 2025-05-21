@@ -5,13 +5,12 @@ describe('Category Page', () => {
   beforeEach(() => {
     categories();
     ingredients();
-    recipesByCategory();
-    notFoundByCategory();
   })
 
   context('When a user visits an existing category page', () => {
 
     it('They should see a list with all of the recipes for said category', () => {
+      recipesByCategory();
       cy.visit('/category/beef');
 
       expect(cy.get('[data-cy="main-title"]').should('exist'));
@@ -22,6 +21,7 @@ describe('Category Page', () => {
 
   context('When a user visits a not existing category page', () => {
     it('They should see a Not Found page', () => {
+      notFoundByCategory();
       cy.visit('/category/unicorns');
 
       expect(cy.get('[data-cy="not-found"]').should('exist'));
