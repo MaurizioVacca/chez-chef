@@ -77,3 +77,15 @@ npm run test
 > [!Important]
 > Cypress requires the application running at localhost:8000. Please ensure your dev server is up
 > and running if you want to execute the test suite.
+
+## Area of improvements
+
+While the project can be considered feature complete, there are several things that can be added to improve it even further:
+
+- add area supports (e.g., being able to search for Canadian meals);
+- unit test through `elm-test` to increase robustness of reusable and generic functions;
+- add sections to the home page, such as "last recipes" or "popular recipes";
+- a nicer "not found" page;
+- a nicer generic error page.
+
+These are the ones from the top of my head, but there are surely many others.
