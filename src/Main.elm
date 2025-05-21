@@ -396,6 +396,7 @@ view model =
                                 , Html.Events.onInput QuerySuggestion
                                 , Html.Attributes.value query
                                 , Html.Events.onFocus (RestoreSearch query)
+                                , Html.Attributes.attribute "data-cy" "search-box"
                                 , onInputSearchClick NoOp
                                 ]
                                 []
@@ -457,14 +458,14 @@ viewSearchBox { ingredients } { search, recipeIndex } =
 viewSearchHits : SearchHitIndex -> String -> Int -> Html msg
 viewSearchHits searchHitIndex query limit =
     let
-        toHtml : Int -> ({ a | id : Int, name : String } -> String) -> List { a | id : Int, name : String } -> List (Html msg)
-        toHtml searchLimit linkTo searchIndex =
+        toHtml : String -> Int -> ({ a | id : Int, name : String } -> String) -> List { a | id : Int, name : String } -> List (Html msg)
+        toHtml hitGroup searchLimit linkTo searchIndex =
             searchIndex
                 |> List.filter (\hit -> String.toLower hit.name |> String.contains (String.toLower query))
                 |> List.take searchLimit
                 |> List.map
                     (\hit ->
-                        li [ Html.Attributes.class "text-base" ]
+                        li [ Html.Attributes.class "text-base", Html.Attributes.attribute "data-cy" <| hitGroup ++ "-hit" ]
                             [ a [ Html.Attributes.href (linkTo hit) ] [ text hit.name ]
                             ]
                     )
@@ -472,10 +473,10 @@ viewSearchHits searchHitIndex query limit =
         ( title, hits, accentClass ) =
             case searchHitIndex of
                 RecipeIndex recipes ->
-                    ( "Recipes", recipes |> toHtml limit Utils.toRecipePage, "border-b-pink-400" )
+                    ( "Recipes", recipes |> toHtml "recipe" limit Utils.toRecipePage, "border-b-pink-400" )
 
                 IngredientIndex ingredients ->
-                    ( "Ingredients", ingredients |> toHtml limit (Utils.toSearchPage (Just "searchIndex=ingredients")), "border-b-amber-400" )
+                    ( "Ingredients", ingredients |> toHtml "ingredient" limit (Utils.toSearchPage (Just "searchIndex=ingredients")), "border-b-amber-400" )
     in
     -- Matches recipes index
     section []
