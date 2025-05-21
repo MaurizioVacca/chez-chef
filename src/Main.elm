@@ -408,7 +408,11 @@ view model =
                             , searchBox
                             ]
                         ]
-                    , a [ Html.Attributes.href "/favourites", Html.Attributes.class "flex flex-col items-center pl-2 sm:px-6 gap-2 sm:self-end" ]
+                    , a
+                        [ Html.Attributes.href "/favourites"
+                        , Html.Attributes.class "flex flex-col items-center pl-2 sm:px-6 gap-2 sm:self-end"
+                        , Html.Attributes.attribute "data-cy" "favourites-link"
+                        ]
                         [ span [ Html.Attributes.class "w-8 h-8" ] [ Ui.Icons.icon Ui.Icons.Book ]
                         , span [ Html.Attributes.class "hidden sm:block text-sm" ] [ text "Favourites" ]
                         ]
