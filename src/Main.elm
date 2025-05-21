@@ -264,7 +264,7 @@ update msg model =
                             ( { model | page = SearchPage (Just (Pages.Search.Model recipes "Search Results")) }, Cmd.none )
 
                         Err _ ->
-                            ( model, Cmd.none )
+                            ( { model | page = NotFoundPage }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
