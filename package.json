@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "A type-safe recipe finder, built with Elm",
   "scripts": {
+    "postinstall": "elm-tooling install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "elm-live src/Main.elm --pushstate --start-page=./index.html -- --output=./build/main.js --debug",
-    "tailwind:watch": "npx tailwindcss -i ./src/main.css -o ./build/main.css --watch"
+    "build": "elm make src/Main.elm --output ./build/main.js",
+    "tailwind:watch": "npx tailwindcss -i ./src/main.css -o ./build/stylesheet/main.css --watch",
+    "tailwind:build": "npx tailwindcss -i ./src/main.css -o ./build/stylesheet/main.css --minify",
+    "bundle": "npm run build && npm run tailwind:build"
   },
   "keywords": [
     "Elm",
@@ -14,9 +18,15 @@
   ],
   "author": "Maurizio Vacca",
   "license": "MIT",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "elm-tooling": "^1.15.1",
     "@tailwindcss/cli": "^4.1.7",
-    "elm-live": "^4.0.2",
-    "tailwindcss": "^4.1.7"
+    "tailwindcss": "^4.1.7",
+    "elm-live": "^4.0.2"
+  },
+  "volta": {
+    "node": "20.18.1",
+    "npm": "10.3.0"
   }
 }
