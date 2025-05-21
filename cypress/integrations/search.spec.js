@@ -50,7 +50,7 @@ describe('Search Page', () => {
 
       cy.visit('/search/unicorns');
 
-      expect(cy.get('[data-cy="not-found"]').should('exist'));
+      cy.get('[data-cy="not-found"]').should('exist');
     });
   });
 });

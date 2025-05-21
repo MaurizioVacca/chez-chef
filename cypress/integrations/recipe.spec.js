@@ -14,9 +14,9 @@ describe('Recipe Page', () => {
         it('They should see a meal page with a title, ingredients and instructions', () => {
             cy.visit('/recipe/52771');
 
-            expect(cy.get('[data-cy="main-title"]').should('exist'));
-            expect(cy.get('[data-cy="recipe-instructions"]').should('exist'));
-            expect(cy.get('[data-cy="recipe-ingredients"]').should('exist'));
+            cy.get('[data-cy="main-title"]').should('exist');
+            cy.get('[data-cy="recipe-instructions"]').should('exist');
+            cy.get('[data-cy="recipe-ingredients"]').should('exist');
         });
     });
 
@@ -24,7 +24,7 @@ describe('Recipe Page', () => {
         it('They should see a Not Found page', () => {
             cy.visit('/recipe/99999');
 
-            expect(cy.get('[data-cy="not-found"]').should('exist'));
+            cy.get('[data-cy="not-found"]').should('exist');
         });
     });
 });

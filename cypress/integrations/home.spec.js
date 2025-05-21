@@ -11,7 +11,7 @@ describe('Home Page', () => {
 
   context('When a user visits the homepage', () => {
     it('They should see a list with all of the categories', () => {
-      expect(cy.get('[data-cy="category-card"]').should('have.length', 14));
+      cy.get('[data-cy="category-card"]').should('have.length', 14);
     });
   });
 });

@@ -13,9 +13,9 @@ describe('Category Page', () => {
       recipesByCategory();
       cy.visit('/category/beef');
 
-      expect(cy.get('[data-cy="main-title"]').should('exist'));
-      expect(cy.get('[data-cy="intro-paragraph"]').should('exist'));
-      expect(cy.get('[data-cy="recipe-card"]').should('have.length', 3));
+      cy.get('[data-cy="main-title"]').should('exist');
+      cy.get('[data-cy="intro-paragraph"]').should('exist');
+      cy.get('[data-cy="recipe-card"]').should('have.length', 3);
     });
   });
 
@@ -24,7 +24,7 @@ describe('Category Page', () => {
       notFoundByCategory();
       cy.visit('/category/unicorns');
 
-      expect(cy.get('[data-cy="not-found"]').should('exist'));
+      cy.get('[data-cy="not-found"]').should('exist');
     });
   });
 });
