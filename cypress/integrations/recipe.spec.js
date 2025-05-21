@@ -1,11 +1,11 @@
-import { categories, ingredients, recipe, recipeNotFound } from "../support/interceptors";
+import {beefRecipe, categories, ingredients, recipeNotFound} from "../support/interceptors";
 
 
 describe('Recipe Page', () => {
     beforeEach(() => {
         categories();
         ingredients();
-        recipe();
+        beefRecipe();
         recipeNotFound();
     })
 
