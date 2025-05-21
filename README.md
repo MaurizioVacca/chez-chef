@@ -60,8 +60,8 @@ In a real-world scenario, I **definitely** would, especially if multiple people 
 meta-frameworks remove a lot of complexity, and I thought it would have been harder to judge "coding skills"
 if most of the problems are solved by the framework itself (such routing and sharing state).
 
-On the other hand, this project showcases a "poor-man meta-framework" where the concepts used on more complete projects
-are still applied.
+Still, this project is a "poor-man meta-framework" where the concepts used on more complete projects
+are still applied and showcasing how some technical solutions are achieved.
 
 ## Testing strategy
 
