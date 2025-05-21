@@ -64,7 +64,7 @@ view { favourites } { recipe } =
             ]
 
         -- Ingredients
-        , section [ Html.Attributes.class "lg:row-start-1 lg:row-end-8 col-span-12 lg:col-start-1 lg:col-end-5 order-3" ]
+        , section [ Html.Attributes.class "lg:row-start-1 lg:row-end-8 col-span-12 lg:col-start-1 lg:col-end-5 order-3", Html.Attributes.attribute "data-cy" "recipe-ingredients" ]
             [ div [ Html.Attributes.class "lg:mt-[calc(125%+40px)]" ]
                 [ h2 [ Html.Attributes.class "text-xl font-semibold text-amber-950" ] [ text "Ingredients" ]
                 , ul [ Html.Attributes.class "flex flex-col font-light mt-4 gap-4" ]
@@ -81,7 +81,7 @@ view { favourites } { recipe } =
             ]
 
         -- Instructions
-        , section [ Html.Attributes.class "col-span-12 lg:col-span-8 order-4 lg:col-start-5" ]
+        , section [ Html.Attributes.class "col-span-12 lg:col-span-8 order-4 lg:col-start-5", Html.Attributes.attribute "data-cy" "recipe-instructions" ]
             [ h2 [ Html.Attributes.class "text-2xl mt-2 text-amber-950" ] [ text "Instructions" ]
             , section [ Html.Attributes.class "mt-6" ] [ Ui.Typography.introParagraph [ text recipe.instructions ] ]
             ]
