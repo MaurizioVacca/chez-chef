@@ -18,12 +18,12 @@
   ],
   "author": "Maurizio Vacca",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "elm-tooling": "^1.15.1",
     "@tailwindcss/cli": "^4.1.7",
-    "tailwindcss": "^4.1.7",
-    "elm-live": "^4.0.2"
+    "cypress": "^14.4.0",
+    "elm-live": "^4.0.2",
+    "elm-tooling": "^1.15.1",
+    "tailwindcss": "^4.1.7"
   },
   "volta": {
     "node": "20.18.1",
