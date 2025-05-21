@@ -43,6 +43,17 @@ and linking them together.
 This kind of "type-driven" development can be achieved because Elm data structures are immutable and, like Ocaml and Haskell,
 pure functional programming allows us for correctness and formal verification.
 
+Application models and types are placed under the `src` directory, within the `Main.elm` module. These are
+
+```
+- Category.elm
+- Ingredient.elm
+- Recipe.elm
+```
+
+where all the endpoints, decoders, and encoders are defined. The `Ui` directory contains all
+the reusable views, while `Utils.elm` module contains generic helpers and re-usable functions.
+
 ### Libraries used
 
 For the most part, the project uses core Elm libraries which are required to fetch data (such `elm/json` and `elm/http`).
