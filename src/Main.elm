@@ -9,6 +9,7 @@ import Html.Events
 import Ingredient
 import Json.Decode
 import Pages.Category
+import Pages.Error
 import Pages.Home
 import Pages.NotFound
 import Pages.Recipe
@@ -368,7 +369,7 @@ view model =
                     ( [ viewPage sharedData model ], viewSearchBox sharedData model )
 
                 Failed ->
-                    ( [ div [] [ text "Failed to load." ] ], text "" )
+                    ( [ Pages.Error.view ], text "" )
 
         query =
             case model.search of
