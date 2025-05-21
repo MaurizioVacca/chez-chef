@@ -6,7 +6,7 @@
     "postinstall": "elm-tooling install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "elm-live src/Main.elm --pushstate --start-page=./index.html -- --output=./build/main.js --debug",
-    "build": "elm make src/Main.elm --output ./build/main.js",
+    "build": "elm make src/Main.elm --optimize --output=./build/main.js",
     "tailwind:watch": "npx tailwindcss -i ./src/main.css -o ./build/stylesheet/main.css --watch",
     "tailwind:build": "npx tailwindcss -i ./src/main.css -o ./build/stylesheet/main.css --minify",
     "bundle": "npm run build && npm run tailwind:build"
