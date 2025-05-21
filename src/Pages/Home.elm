@@ -17,7 +17,10 @@ view model =
         , div [ Html.Attributes.class "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mt-6" ]
             (List.map
                 (\category ->
-                    article [ Html.Attributes.class "flex flex-col gap-4 overflow-hidden bg-white rounded-xl shadow" ]
+                    article
+                        [ Html.Attributes.class "flex flex-col gap-4 overflow-hidden bg-white rounded-xl shadow"
+                        , Html.Attributes.attribute "data-cy" "category-card"
+                        ]
                         [ a [ Html.Attributes.href ("/category/" ++ String.toLower category.name) ]
                             [ figure [ Html.Attributes.class "relative" ]
                                 [ img [ Html.Attributes.src category.thumb, Html.Attributes.alt category.description, Html.Attributes.class "object-cover w-full h-auto" ] []
